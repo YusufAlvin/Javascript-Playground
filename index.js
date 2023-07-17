@@ -1,56 +1,592 @@
 // ============= Checksum algorithm =============
 const crypto = require('crypto');
+// const adler32 = require('adler-32');
 
 const data1 = {
-  items: [
-    { id: 1, type: 'a' },
-    { id: 2, type: 'b' },
-    { id: 3, type: 'c' },
+  name: "Protocol Test 1",
+  profiles: [
+    {
+      profileId: 1,
+      removedFromQueue: false,
+      name: "Profile 1",
+      pulseStationId: 1,
+      leftTube: {
+        barcode: "AABB1",
+        startVolume: 20,
+        startConcentration: 0.1,
+        liquidType: "sample",
+        tubeSlot: {
+          slot: "A1",
+          deckId: 1,
+          rackId: 4
+        }
+      },
+      nanoTube: {
+        barcode: "AABB2",
+        startVolume: 0,
+        startConcentration: 0.1,
+        liquidType: "empty",
+        tubeSlot: {
+          slot: "A1",
+          deckId: 1,
+          rackId: 6
+        }
+      },
+      rightTube: {
+        barcode: "AABB3",
+        startVolume: 10,
+        startConcentration: 0.1,
+        liquidType: "buffer",
+        tubeSlot: {
+          slot: "A1",
+          deckId: 3,
+          rackId: 4
+        }
+      },
+      chip: {
+        mwco: 5,
+        chipSlot: {
+          slot: "A1",
+          deckId: 4,
+          rackId: 3
+        }
+      },
+      cleaningChip: {
+        enabled: true,
+        cleaningDuration: 2,
+        numberOfRinses: 2
+      },
+      sampleRecoveries: [
+        {
+          recoveryType: "buffer",
+          volume: 1
+        },
+        {
+          recoveryType: "air",
+          volume: 1
+        }
+      ],
+      methodId: 1,
+      setupId: 1,
+      mwco: 5,
+      bufferSource: "Tube",
+      startVolume: 50,
+      finalVolume: 20,
+      startExchange: 10,
+      stepSize: 2,
+      startingConcentration: 0.5,
+      estimateFinalConcentration: 0.1,
+      exchangeVolume: 30,
+      currentBufferVolume: 40
+    }
   ],
-  isRunning: false,
-};
-
-const data2 = {
-  items: [
-    { id: 1, type: 'a' },
-    { id: 2, type: 'b' },
-    { id: 3, type: 'c' },
+  tubes: [
+    {
+      barcode: "AABB1",
+      startVolume: 20,
+      startConcentration: 0.1,
+      liquidType: "sample",
+      tubeSlot: {
+        slot: "A1",
+        deckId: 2,
+        rackId: 5
+      }
+    },
+    {
+      barcode: "AABB2",
+      startVolume: 0,
+      startConcentration: 0.1,
+      liquidType: "empty",
+      tubeSlot: {
+        slot: "A1",
+        deckId: 1,
+        rackId: 6
+      }
+    },
+    {
+      barcode: "AABB3",
+      startVolume: 10,
+      startConcentration: 0.1,
+      liquidType: "buffer",
+      tubeSlot: {
+        slot: "A1",
+        deckId: 3,
+        rackId: 4
+      }
+    },
+    {
+      barcode: "AABB3",
+      startVolume: 10,
+      startConcentration: 0.1,
+      liquidType: "notube",
+      tubeSlot: {
+        slot: "C2",
+        deckId: 3,
+        rackId: 5
+      }
+    }
   ],
-  isRunning: false,
-};
-
-function calculateChecksum(data) {
-  const dataString = JSON.stringify(data);
-  const hash = crypto.createHash('sha256').update(dataString).digest('hex');
-  return hash;
+  chips: [
+    {
+      mwco: 5,
+      chipSlot: {
+        slot: "A1",
+        deckId: 4,
+        rackId: 3
+      }
+    },
+    {
+      mwco: 10,
+      chipSlot: {
+        slot: "A3",
+        deckId: 4,
+        rackId: 3
+      }
+    }
+  ],
+  decks: [
+    {
+      deckId: 2,
+      rackId: 6,
+      rackType: "TUBE_RACK"
+    },
+    {
+      deckId: 1,
+      rackId: 4,
+      rackType: "TUBE_RACK"
+    },
+    {
+      deckId: 4,
+      rackId: 3,
+      rackType: "CHIP_CADDY"
+    },
+    {
+      deckId: 3,
+      rackId: 5,
+      rackType: "TUBE_RACK"
+    }
+  ],
+  pulseStations: [
+    {
+      Id: 1,
+      LeftTubeAdapter: "50mL",
+      NanoTubeAdapter: "1.5mL",
+      RightTubeAdapter: "15mL",
+      BufferSource: "Tube",
+      BufferPosition: "Right",
+      BufferType: "alcohol",
+      TotalBufferVolume: 30
+    },
+    {
+      Id: 2,
+      LeftTubeAdapter: "50mL",
+      NanoTubeAdapter: "None",
+      RightTubeAdapter: "50mL",
+      BufferSource: "Tube",
+      BufferPosition: "Right",
+      BufferType: "pbs",
+      TotalBufferVolume: 30
+    },
+    {
+      Id: 3,
+      LeftTubeAdapter: "15mL",
+      NanoTubeAdapter: "None",
+      RightTubeAdapter: "50mL",
+      BufferSource: "Reservoir",
+      BufferPosition: "Right",
+      BufferType: "alcohol",
+      TotalBufferVolume: 30
+    },
+    {
+      Id: 4,
+      LeftTubeAdapter: "15mL",
+      NanoTubeAdapter: "None",
+      RightTubeAdapter: "50mL",
+      BufferSource: "Reservoir",
+      BufferPosition: "Right",
+      BufferType: "alcohol",
+      TotalBufferVolume: 30
+    }
+  ],
+  cleaningStations: [
+    {
+      Id: 5,
+      LeftTubeAdapter: "50mL",
+      CleaningSolution: "AAA",
+      TotalCleaningVolume: 1000,
+      RightTubeAdapter: "50mL",
+      RinseSolution: "BBB",
+      TotalRinseVolume: 1000
+    }
+  ]
 }
 
+const data2 = {
+  name: "Protocol Test 1",
+  profiles: [
+    {
+      profileId: 1,
+      removedFromQueue: false,
+      name: "Profile 1",
+      pulseStationId: 1,
+      leftTube: {
+        barcode: "AABB1",
+        startVolume: 20,
+        startConcentration: 0.1,
+        liquidType: "sample",
+        tubeSlot: {
+          slot: "A1",
+          deckId: 1,
+          rackId: 4
+        }
+      },
+      nanoTube: {
+        barcode: "AABB2",
+        startVolume: 0,
+        startConcentration: 0.1,
+        liquidType: "empty",
+        tubeSlot: {
+          slot: "A1",
+          deckId: 1,
+          rackId: 6
+        }
+      },
+      rightTube: {
+        barcode: "AABB3",
+        startVolume: 10,
+        startConcentration: 0.1,
+        liquidType: "buffer",
+        tubeSlot: {
+          slot: "A1",
+          deckId: 3,
+          rackId: 4
+        }
+      },
+      chip: {
+        mwco: 5,
+        chipSlot: {
+          slot: "A1",
+          deckId: 4,
+          rackId: 3
+        }
+      },
+      cleaningChip: {
+        enabled: true,
+        cleaningDuration: 2,
+        numberOfRinses: 2
+      },
+      sampleRecoveries: [
+        {
+          recoveryType: "buffer",
+          volume: 1
+        },
+        {
+          recoveryType: "air",
+          volume: 1
+        }
+      ],
+      methodId: 1,
+      setupId: 1,
+      mwco: 5,
+      bufferSource: "Tube",
+      startVolume: 50,
+      finalVolume: 20,
+      startExchange: 10,
+      stepSize: 2,
+      startingConcentration: 0.5,
+      estimateFinalConcentration: 0.1,
+      exchangeVolume: 30,
+      currentBufferVolume: 40
+    }
+  ],
+  tubes: [
+    {
+      barcode: "AABB1",
+      startVolume: 20,
+      startConcentration: 0.1,
+      liquidType: "sample",
+      tubeSlot: {
+        slot: "A1",
+        deckId: 2,
+        rackId: 5
+      }
+    },
+    {
+      barcode: "AABB2",
+      startVolume: 0,
+      startConcentration: 0.1,
+      liquidType: "empty",
+      tubeSlot: {
+        slot: "A1",
+        deckId: 1,
+        rackId: 6
+      }
+    },
+    {
+      barcode: "AABB3",
+      startVolume: 10,
+      startConcentration: 0.1,
+      liquidType: "buffer",
+      tubeSlot: {
+        slot: "A1",
+        deckId: 3,
+        rackId: 4
+      }
+    },
+    {
+      barcode: "AABB3",
+      startVolume: 10,
+      startConcentration: 0.1,
+      liquidType: "notube",
+      tubeSlot: {
+        slot: "C2",
+        deckId: 3,
+        rackId: 5
+      }
+    }
+  ],
+  chips: [
+    {
+      mwco: 5,
+      chipSlot: {
+        slot: "A1",
+        deckId: 4,
+        rackId: 3
+      }
+    },
+    {
+      mwco: 10,
+      chipSlot: {
+        slot: "A3",
+        deckId: 4,
+        rackId: 3
+      }
+    }
+  ],
+  decks: [
+    {
+      deckId: 2,
+      rackId: 6,
+      rackType: "TUBE_RACK"
+    },
+    {
+      deckId: 1,
+      rackId: 4,
+      rackType: "TUBE_RACK"
+    },
+    {
+      deckId: 4,
+      rackId: 3,
+      rackType: "CHIP_CADDY"
+    },
+    {
+      deckId: 3,
+      rackId: 5,
+      rackType: "TUBE_RACK"
+    }
+  ],
+  pulseStations: [
+    {
+      Id: 1,
+      LeftTubeAdapter: "50mL",
+      NanoTubeAdapter: "1.5mL",
+      RightTubeAdapter: "15mL",
+      BufferSource: "Tube",
+      BufferPosition: "Right",
+      BufferType: "alcohol",
+      TotalBufferVolume: 30
+    },
+    {
+      Id: 2,
+      LeftTubeAdapter: "50mL",
+      NanoTubeAdapter: "None",
+      RightTubeAdapter: "50mL",
+      BufferSource: "Tube",
+      BufferPosition: "Right",
+      BufferType: "pbs",
+      TotalBufferVolume: 30
+    },
+    {
+      Id: 3,
+      LeftTubeAdapter: "15mL",
+      NanoTubeAdapter: "None",
+      RightTubeAdapter: "50mL",
+      BufferSource: "Reservoir",
+      BufferPosition: "Right",
+      BufferType: "alcohol",
+      TotalBufferVolume: 30
+    },
+    {
+      Id: 4,
+      LeftTubeAdapter: "15mL",
+      NanoTubeAdapter: "None",
+      RightTubeAdapter: "50mL",
+      BufferSource: "Reservoir",
+      BufferPosition: "Right",
+      BufferType: "alcohol",
+      TotalBufferVolume: 30
+    }
+  ],
+  cleaningStations: [
+    {
+      Id: 5,
+      LeftTubeAdapter: "50mL",
+      CleaningSolution: "AAA",
+      TotalCleaningVolume: 1000,
+      RightTubeAdapter: "50mL",
+      RinseSolution: "BBB",
+      TotalRinseVolume: 1000
+    }
+  ]
+}
+
+
+
 // function calculateChecksum(data) {
-//   let checksum = 0;
+//   const serialized = JSON.stringify(data);
+//   return adler32.sum(serialized);
+// }
 
-//   // Convert the data to a string representation
+// function calculateChecksum(data) {
 //   const dataString = JSON.stringify(data);
+//   const hash = crypto.createHash('sha256').update(dataString).digest('hex');
+//   return hash;
+// };
 
-//   // Iterate over each character in the string
-//   for (let i = 0; i < dataString.length; i++) {
-//     // XOR the checksum with the character code
-//     checksum ^= dataString.charCodeAt(i);
+// const calculateChecksum = (data) => {
+//   const hash = crypto.createHash('sha256');
+
+//   function processValue(value) {
+//     if (typeof value === 'object') {
+//       if (Array.isArray(value)) {
+//         value.forEach(processValue);
+//       } else {
+//         Object.values(value).forEach(processValue);
+//       }
+//     } else if (typeof value !== 'function') {
+//       if (typeof value === 'number') {
+//         // If the value is a number, convert it to a buffer before updating the hash
+//         const buffer = Buffer.allocUnsafe(8);
+//         buffer.writeDoubleBE(value);
+//         hash.update(buffer);
+//       } else {
+//         // For other types, convert them to a string and update the hash
+//         hash.update(String(value));
+//       }
+//     }
 //   }
 
-//   return checksum.toString(16); // Convert to hexadecimal string
-// }
+//   processValue(data);
+//   return hash.digest('hex');
+// };
 
-// const checksum = (data) => {
-//   let str = JSON.stringify(data);
-//   let sum = 0;
-//   for (let i = 0; i < str.length; i++) {
-//     sum += str.charCodeAt(i);
+// const calculateChecksum = (data) => {
+//   const hash = crypto.createHash('sha256');
+
+//   function processValue(value) {
+//     if (typeof value === 'object') {
+//       if (Array.isArray(value)) {
+//         value.forEach(processValue);
+//       } else {
+//         Object.values(value).forEach(processValue);
+//       }
+//     } else if (typeof value !== 'function') {
+//       hash.update(String(value));
+//     }
 //   }
-//   return sum;
-// }
 
-console.log('data1: ', calculateChecksum(data1));
-console.log('data2: ', calculateChecksum(data2));
+//   processValue(data);
+//   return hash.digest('hex');
+// };
+
+function deepEqual(a, b) {
+  // If both values are identical, they're equal
+  if (a === b) {
+    return true;
+  }
+
+  // Check if both values are objects and not null
+  if (typeof a === 'object' && a !== null && typeof b === 'object' && b !== null) {
+    // Check if both values are arrays
+    if (Array.isArray(a) && Array.isArray(b)) {
+      // Check if the length of the arrays is the same
+      if (a.length !== b.length) {
+        return false;
+      }
+
+      // Check if all elements in the arrays are deeply equal
+      for (let i = 0; i < a.length; i++) {
+        if (!deepEqual(a[i], b[i])) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    // Get the keys of the objects
+    const keysA = Object.keys(a);
+    const keysB = Object.keys(b);
+
+    // Check if the number of keys is the same
+    if (keysA.length !== keysB.length) {
+      return false;
+    }
+
+    // Check if all keys and values are deeply equal
+    for (let key of keysA) {
+      if (!deepEqual(a[key], b[key])) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  // Values are of different types or not objects
+  return false;
+}
+
+// const startTime2 = performance.now();
+// for (let index = 0; index < 10000; index++) {
+//   calculateChecksum(data1);
+// }
+// const endTime2 = performance.now();
+
+// const startTime1 = performance.now();
+// for (let index = 0; index < 10000; index++) {
+//   console.log(deepEqual(data1, data2));
+// }
+// const endTime1 = performance.now();
+
+const startTime3 = performance.now();
+for (let index = 0; index < 10000; index++) {
+  JSON.stringify(data1);
+}
+const endTime3 = performance.now();
+
+// const elapsedTime1 = endTime1 - startTime1;
+// const elapsedTime2 = endTime2 - startTime2;
+const elapsedTime3 = endTime3 - startTime3;
+
+// console.log('deepEqual: ', elapsedTime1);
+// console.log('checksum: ', elapsedTime2);
+console.log('stringify: ', elapsedTime3);
+
+// console.time('deepEqual');
+// const equal = deepEqual(data1, data2);
+// console.log('isEqual: ', equal);
+// console.timeEnd('deepEqual');
+
+// console.time('checksum');
+// console.log('isEqual: ', calculateChecksum(data1) === calculateChecksum(data2));
+// console.timeEnd('checksum');
+
+// const hash1 = calculateChecksum(data1);
+// const hash2 = calculateChecksum(data2);
+// console.log('hash1: ', hash1);
+// console.log('hash2: ', hash2);
+
 // ============= Convert Object to Array =============
 // const data = {
 //   1: { name: 'a', email: 'a@email.com' },
