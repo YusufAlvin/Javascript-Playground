@@ -1,444 +1,455 @@
+// ============= Reference Equality =============
+const a = {
+  id: 1,
+  type: 'a'
+};
+const b = a
+
+console.log('a: ', a);
+console.log('b: ', b);
+console.log(a == b);
+
 // ============= Checksum algorithm =============
-const crypto = require('crypto');
-// const adler32 = require('adler-32');
+// const crypto = require('crypto');
+// // const adler32 = require('adler-32');
 
-const data1 = {
-  name: "Protocol Test 1",
-  profiles: [
-    {
-      profileId: 1,
-      removedFromQueue: false,
-      name: "Profile 1",
-      pulseStationId: 1,
-      leftTube: {
-        barcode: "AABB1",
-        startVolume: 20,
-        startConcentration: 0.1,
-        liquidType: "sample",
-        tubeSlot: {
-          slot: "A1",
-          deckId: 1,
-          rackId: 4
-        }
-      },
-      nanoTube: {
-        barcode: "AABB2",
-        startVolume: 0,
-        startConcentration: 0.1,
-        liquidType: "empty",
-        tubeSlot: {
-          slot: "A1",
-          deckId: 1,
-          rackId: 6
-        }
-      },
-      rightTube: {
-        barcode: "AABB3",
-        startVolume: 10,
-        startConcentration: 0.1,
-        liquidType: "buffer",
-        tubeSlot: {
-          slot: "A1",
-          deckId: 3,
-          rackId: 4
-        }
-      },
-      chip: {
-        mwco: 5,
-        chipSlot: {
-          slot: "A1",
-          deckId: 4,
-          rackId: 3
-        }
-      },
-      cleaningChip: {
-        enabled: true,
-        cleaningDuration: 2,
-        numberOfRinses: 2
-      },
-      sampleRecoveries: [
-        {
-          recoveryType: "buffer",
-          volume: 1
-        },
-        {
-          recoveryType: "air",
-          volume: 1
-        }
-      ],
-      methodId: 1,
-      setupId: 1,
-      mwco: 5,
-      bufferSource: "Tube",
-      startVolume: 50,
-      finalVolume: 20,
-      startExchange: 10,
-      stepSize: 2,
-      startingConcentration: 0.5,
-      estimateFinalConcentration: 0.1,
-      exchangeVolume: 30,
-      currentBufferVolume: 40
-    }
-  ],
-  tubes: [
-    {
-      barcode: "AABB1",
-      startVolume: 20,
-      startConcentration: 0.1,
-      liquidType: "sample",
-      tubeSlot: {
-        slot: "A1",
-        deckId: 2,
-        rackId: 5
-      }
-    },
-    {
-      barcode: "AABB2",
-      startVolume: 0,
-      startConcentration: 0.1,
-      liquidType: "empty",
-      tubeSlot: {
-        slot: "A1",
-        deckId: 1,
-        rackId: 6
-      }
-    },
-    {
-      barcode: "AABB3",
-      startVolume: 10,
-      startConcentration: 0.1,
-      liquidType: "buffer",
-      tubeSlot: {
-        slot: "A1",
-        deckId: 3,
-        rackId: 4
-      }
-    },
-    {
-      barcode: "AABB3",
-      startVolume: 10,
-      startConcentration: 0.1,
-      liquidType: "notube",
-      tubeSlot: {
-        slot: "C2",
-        deckId: 3,
-        rackId: 5
-      }
-    }
-  ],
-  chips: [
-    {
-      mwco: 5,
-      chipSlot: {
-        slot: "A1",
-        deckId: 4,
-        rackId: 3
-      }
-    },
-    {
-      mwco: 10,
-      chipSlot: {
-        slot: "A3",
-        deckId: 4,
-        rackId: 3
-      }
-    }
-  ],
-  decks: [
-    {
-      deckId: 2,
-      rackId: 6,
-      rackType: "TUBE_RACK"
-    },
-    {
-      deckId: 1,
-      rackId: 4,
-      rackType: "TUBE_RACK"
-    },
-    {
-      deckId: 4,
-      rackId: 3,
-      rackType: "CHIP_CADDY"
-    },
-    {
-      deckId: 3,
-      rackId: 5,
-      rackType: "TUBE_RACK"
-    }
-  ],
-  pulseStations: [
-    {
-      Id: 1,
-      LeftTubeAdapter: "50mL",
-      NanoTubeAdapter: "1.5mL",
-      RightTubeAdapter: "15mL",
-      BufferSource: "Tube",
-      BufferPosition: "Right",
-      BufferType: "alcohol",
-      TotalBufferVolume: 30
-    },
-    {
-      Id: 2,
-      LeftTubeAdapter: "50mL",
-      NanoTubeAdapter: "None",
-      RightTubeAdapter: "50mL",
-      BufferSource: "Tube",
-      BufferPosition: "Right",
-      BufferType: "pbs",
-      TotalBufferVolume: 30
-    },
-    {
-      Id: 3,
-      LeftTubeAdapter: "15mL",
-      NanoTubeAdapter: "None",
-      RightTubeAdapter: "50mL",
-      BufferSource: "Reservoir",
-      BufferPosition: "Right",
-      BufferType: "alcohol",
-      TotalBufferVolume: 30
-    },
-    {
-      Id: 4,
-      LeftTubeAdapter: "15mL",
-      NanoTubeAdapter: "None",
-      RightTubeAdapter: "50mL",
-      BufferSource: "Reservoir",
-      BufferPosition: "Right",
-      BufferType: "alcohol",
-      TotalBufferVolume: 30
-    }
-  ],
-  cleaningStations: [
-    {
-      Id: 5,
-      LeftTubeAdapter: "50mL",
-      CleaningSolution: "AAA",
-      TotalCleaningVolume: 1000,
-      RightTubeAdapter: "50mL",
-      RinseSolution: "BBB",
-      TotalRinseVolume: 1000
-    }
-  ]
-}
+// const data1 = {
+//   name: "Protocol Test 1",
+//   profiles: [
+//     {
+//       profileId: 1,
+//       removedFromQueue: false,
+//       name: "Profile 1",
+//       pulseStationId: 1,
+//       leftTube: {
+//         barcode: "AABB1",
+//         startVolume: 20,
+//         startConcentration: 0.1,
+//         liquidType: "sample",
+//         tubeSlot: {
+//           slot: "A1",
+//           deckId: 1,
+//           rackId: 4
+//         }
+//       },
+//       nanoTube: {
+//         barcode: "AABB2",
+//         startVolume: 0,
+//         startConcentration: 0.1,
+//         liquidType: "empty",
+//         tubeSlot: {
+//           slot: "A1",
+//           deckId: 1,
+//           rackId: 6
+//         }
+//       },
+//       rightTube: {
+//         barcode: "AABB3",
+//         startVolume: 10,
+//         startConcentration: 0.1,
+//         liquidType: "buffer",
+//         tubeSlot: {
+//           slot: "A1",
+//           deckId: 3,
+//           rackId: 4
+//         }
+//       },
+//       chip: {
+//         mwco: 5,
+//         chipSlot: {
+//           slot: "A1",
+//           deckId: 4,
+//           rackId: 3
+//         }
+//       },
+//       cleaningChip: {
+//         enabled: true,
+//         cleaningDuration: 2,
+//         numberOfRinses: 2
+//       },
+//       sampleRecoveries: [
+//         {
+//           recoveryType: "buffer",
+//           volume: 1
+//         },
+//         {
+//           recoveryType: "air",
+//           volume: 1
+//         }
+//       ],
+//       methodId: 1,
+//       setupId: 1,
+//       mwco: 5,
+//       bufferSource: "Tube",
+//       startVolume: 50,
+//       finalVolume: 20,
+//       startExchange: 10,
+//       stepSize: 2,
+//       startingConcentration: 0.5,
+//       estimateFinalConcentration: 0.1,
+//       exchangeVolume: 30,
+//       currentBufferVolume: 40
+//     }
+//   ],
+//   tubes: [
+//     {
+//       barcode: "AABB1",
+//       startVolume: 20,
+//       startConcentration: 0.1,
+//       liquidType: "sample",
+//       tubeSlot: {
+//         slot: "A1",
+//         deckId: 2,
+//         rackId: 5
+//       }
+//     },
+//     {
+//       barcode: "AABB2",
+//       startVolume: 0,
+//       startConcentration: 0.1,
+//       liquidType: "empty",
+//       tubeSlot: {
+//         slot: "A1",
+//         deckId: 1,
+//         rackId: 6
+//       }
+//     },
+//     {
+//       barcode: "AABB3",
+//       startVolume: 10,
+//       startConcentration: 0.1,
+//       liquidType: "buffer",
+//       tubeSlot: {
+//         slot: "A1",
+//         deckId: 3,
+//         rackId: 4
+//       }
+//     },
+//     {
+//       barcode: "AABB3",
+//       startVolume: 10,
+//       startConcentration: 0.1,
+//       liquidType: "notube",
+//       tubeSlot: {
+//         slot: "C2",
+//         deckId: 3,
+//         rackId: 5
+//       }
+//     }
+//   ],
+//   chips: [
+//     {
+//       mwco: 5,
+//       chipSlot: {
+//         slot: "A1",
+//         deckId: 4,
+//         rackId: 3
+//       }
+//     },
+//     {
+//       mwco: 10,
+//       chipSlot: {
+//         slot: "A3",
+//         deckId: 4,
+//         rackId: 3
+//       }
+//     }
+//   ],
+//   decks: [
+//     {
+//       deckId: 2,
+//       rackId: 6,
+//       rackType: "TUBE_RACK"
+//     },
+//     {
+//       deckId: 1,
+//       rackId: 4,
+//       rackType: "TUBE_RACK"
+//     },
+//     {
+//       deckId: 4,
+//       rackId: 3,
+//       rackType: "CHIP_CADDY"
+//     },
+//     {
+//       deckId: 3,
+//       rackId: 5,
+//       rackType: "TUBE_RACK"
+//     }
+//   ],
+//   pulseStations: [
+//     {
+//       Id: 1,
+//       LeftTubeAdapter: "50mL",
+//       NanoTubeAdapter: "1.5mL",
+//       RightTubeAdapter: "15mL",
+//       BufferSource: "Tube",
+//       BufferPosition: "Right",
+//       BufferType: "alcohol",
+//       TotalBufferVolume: 30
+//     },
+//     {
+//       Id: 2,
+//       LeftTubeAdapter: "50mL",
+//       NanoTubeAdapter: "None",
+//       RightTubeAdapter: "50mL",
+//       BufferSource: "Tube",
+//       BufferPosition: "Right",
+//       BufferType: "pbs",
+//       TotalBufferVolume: 30
+//     },
+//     {
+//       Id: 3,
+//       LeftTubeAdapter: "15mL",
+//       NanoTubeAdapter: "None",
+//       RightTubeAdapter: "50mL",
+//       BufferSource: "Reservoir",
+//       BufferPosition: "Right",
+//       BufferType: "alcohol",
+//       TotalBufferVolume: 30
+//     },
+//     {
+//       Id: 4,
+//       LeftTubeAdapter: "15mL",
+//       NanoTubeAdapter: "None",
+//       RightTubeAdapter: "50mL",
+//       BufferSource: "Reservoir",
+//       BufferPosition: "Right",
+//       BufferType: "alcohol",
+//       TotalBufferVolume: 30
+//     }
+//   ],
+//   cleaningStations: [
+//     {
+//       Id: 5,
+//       LeftTubeAdapter: "50mL",
+//       CleaningSolution: "AAA",
+//       TotalCleaningVolume: 1000,
+//       RightTubeAdapter: "50mL",
+//       RinseSolution: "BBB",
+//       TotalRinseVolume: 1000
+//     }
+//   ]
+// }
 
-const data2 = {
-  name: "Protocol Test 1",
-  profiles: [
-    {
-      profileId: 1,
-      removedFromQueue: false,
-      name: "Profile 1",
-      pulseStationId: 1,
-      leftTube: {
-        barcode: "AABB1",
-        startVolume: 20,
-        startConcentration: 0.1,
-        liquidType: "sample",
-        tubeSlot: {
-          slot: "A1",
-          deckId: 1,
-          rackId: 4
-        }
-      },
-      nanoTube: {
-        barcode: "AABB2",
-        startVolume: 0,
-        startConcentration: 0.1,
-        liquidType: "empty",
-        tubeSlot: {
-          slot: "A1",
-          deckId: 1,
-          rackId: 6
-        }
-      },
-      rightTube: {
-        barcode: "AABB3",
-        startVolume: 10,
-        startConcentration: 0.1,
-        liquidType: "buffer",
-        tubeSlot: {
-          slot: "A1",
-          deckId: 3,
-          rackId: 4
-        }
-      },
-      chip: {
-        mwco: 5,
-        chipSlot: {
-          slot: "A1",
-          deckId: 4,
-          rackId: 3
-        }
-      },
-      cleaningChip: {
-        enabled: true,
-        cleaningDuration: 2,
-        numberOfRinses: 2
-      },
-      sampleRecoveries: [
-        {
-          recoveryType: "buffer",
-          volume: 1
-        },
-        {
-          recoveryType: "air",
-          volume: 1
-        }
-      ],
-      methodId: 1,
-      setupId: 1,
-      mwco: 5,
-      bufferSource: "Tube",
-      startVolume: 50,
-      finalVolume: 20,
-      startExchange: 10,
-      stepSize: 2,
-      startingConcentration: 0.5,
-      estimateFinalConcentration: 0.1,
-      exchangeVolume: 30,
-      currentBufferVolume: 40
-    }
-  ],
-  tubes: [
-    {
-      barcode: "AABB1",
-      startVolume: 20,
-      startConcentration: 0.1,
-      liquidType: "sample",
-      tubeSlot: {
-        slot: "A1",
-        deckId: 2,
-        rackId: 5
-      }
-    },
-    {
-      barcode: "AABB2",
-      startVolume: 0,
-      startConcentration: 0.1,
-      liquidType: "empty",
-      tubeSlot: {
-        slot: "A1",
-        deckId: 1,
-        rackId: 6
-      }
-    },
-    {
-      barcode: "AABB3",
-      startVolume: 10,
-      startConcentration: 0.1,
-      liquidType: "buffer",
-      tubeSlot: {
-        slot: "A1",
-        deckId: 3,
-        rackId: 4
-      }
-    },
-    {
-      barcode: "AABB3",
-      startVolume: 10,
-      startConcentration: 0.1,
-      liquidType: "notube",
-      tubeSlot: {
-        slot: "C2",
-        deckId: 3,
-        rackId: 5
-      }
-    }
-  ],
-  chips: [
-    {
-      mwco: 5,
-      chipSlot: {
-        slot: "A1",
-        deckId: 4,
-        rackId: 3
-      }
-    },
-    {
-      mwco: 10,
-      chipSlot: {
-        slot: "A3",
-        deckId: 4,
-        rackId: 3
-      }
-    }
-  ],
-  decks: [
-    {
-      deckId: 2,
-      rackId: 6,
-      rackType: "TUBE_RACK"
-    },
-    {
-      deckId: 1,
-      rackId: 4,
-      rackType: "TUBE_RACK"
-    },
-    {
-      deckId: 4,
-      rackId: 3,
-      rackType: "CHIP_CADDY"
-    },
-    {
-      deckId: 3,
-      rackId: 5,
-      rackType: "TUBE_RACK"
-    }
-  ],
-  pulseStations: [
-    {
-      Id: 1,
-      LeftTubeAdapter: "50mL",
-      NanoTubeAdapter: "1.5mL",
-      RightTubeAdapter: "15mL",
-      BufferSource: "Tube",
-      BufferPosition: "Right",
-      BufferType: "alcohol",
-      TotalBufferVolume: 30
-    },
-    {
-      Id: 2,
-      LeftTubeAdapter: "50mL",
-      NanoTubeAdapter: "None",
-      RightTubeAdapter: "50mL",
-      BufferSource: "Tube",
-      BufferPosition: "Right",
-      BufferType: "pbs",
-      TotalBufferVolume: 30
-    },
-    {
-      Id: 3,
-      LeftTubeAdapter: "15mL",
-      NanoTubeAdapter: "None",
-      RightTubeAdapter: "50mL",
-      BufferSource: "Reservoir",
-      BufferPosition: "Right",
-      BufferType: "alcohol",
-      TotalBufferVolume: 30
-    },
-    {
-      Id: 4,
-      LeftTubeAdapter: "15mL",
-      NanoTubeAdapter: "None",
-      RightTubeAdapter: "50mL",
-      BufferSource: "Reservoir",
-      BufferPosition: "Right",
-      BufferType: "alcohol",
-      TotalBufferVolume: 30
-    }
-  ],
-  cleaningStations: [
-    {
-      Id: 5,
-      LeftTubeAdapter: "50mL",
-      CleaningSolution: "AAA",
-      TotalCleaningVolume: 1000,
-      RightTubeAdapter: "50mL",
-      RinseSolution: "BBB",
-      TotalRinseVolume: 1000
-    }
-  ]
-}
+// const data2 = {
+//   name: "Protocol Test 1",
+//   profiles: [
+//     {
+//       profileId: 1,
+//       removedFromQueue: false,
+//       name: "Profile 1",
+//       pulseStationId: 1,
+//       leftTube: {
+//         barcode: "AABB1",
+//         startVolume: 20,
+//         startConcentration: 0.1,
+//         liquidType: "sample",
+//         tubeSlot: {
+//           slot: "A1",
+//           deckId: 1,
+//           rackId: 4
+//         }
+//       },
+//       nanoTube: {
+//         barcode: "AABB2",
+//         startVolume: 0,
+//         startConcentration: 0.1,
+//         liquidType: "empty",
+//         tubeSlot: {
+//           slot: "A1",
+//           deckId: 1,
+//           rackId: 6
+//         }
+//       },
+//       rightTube: {
+//         barcode: "AABB3",
+//         startVolume: 10,
+//         startConcentration: 0.1,
+//         liquidType: "buffer",
+//         tubeSlot: {
+//           slot: "A1",
+//           deckId: 3,
+//           rackId: 4
+//         }
+//       },
+//       chip: {
+//         mwco: 5,
+//         chipSlot: {
+//           slot: "A1",
+//           deckId: 4,
+//           rackId: 3
+//         }
+//       },
+//       cleaningChip: {
+//         enabled: true,
+//         cleaningDuration: 2,
+//         numberOfRinses: 2
+//       },
+//       sampleRecoveries: [
+//         {
+//           recoveryType: "buffer",
+//           volume: 1
+//         },
+//         {
+//           recoveryType: "air",
+//           volume: 1
+//         }
+//       ],
+//       methodId: 1,
+//       setupId: 1,
+//       mwco: 5,
+//       bufferSource: "Tube",
+//       startVolume: 50,
+//       finalVolume: 20,
+//       startExchange: 10,
+//       stepSize: 2,
+//       startingConcentration: 0.5,
+//       estimateFinalConcentration: 0.1,
+//       exchangeVolume: 30,
+//       currentBufferVolume: 40
+//     }
+//   ],
+//   tubes: [
+//     {
+//       barcode: "AABB1",
+//       startVolume: 20,
+//       startConcentration: 0.1,
+//       liquidType: "sample",
+//       tubeSlot: {
+//         slot: "A1",
+//         deckId: 2,
+//         rackId: 5
+//       }
+//     },
+//     {
+//       barcode: "AABB2",
+//       startVolume: 0,
+//       startConcentration: 0.1,
+//       liquidType: "empty",
+//       tubeSlot: {
+//         slot: "A1",
+//         deckId: 1,
+//         rackId: 6
+//       }
+//     },
+//     {
+//       barcode: "AABB3",
+//       startVolume: 10,
+//       startConcentration: 0.1,
+//       liquidType: "buffer",
+//       tubeSlot: {
+//         slot: "A1",
+//         deckId: 3,
+//         rackId: 4
+//       }
+//     },
+//     {
+//       barcode: "AABB3",
+//       startVolume: 10,
+//       startConcentration: 0.1,
+//       liquidType: "notube",
+//       tubeSlot: {
+//         slot: "C2",
+//         deckId: 3,
+//         rackId: 5
+//       }
+//     }
+//   ],
+//   chips: [
+//     {
+//       mwco: 5,
+//       chipSlot: {
+//         slot: "A1",
+//         deckId: 4,
+//         rackId: 3
+//       }
+//     },
+//     {
+//       mwco: 10,
+//       chipSlot: {
+//         slot: "A3",
+//         deckId: 4,
+//         rackId: 3
+//       }
+//     }
+//   ],
+//   decks: [
+//     {
+//       deckId: 2,
+//       rackId: 6,
+//       rackType: "TUBE_RACK"
+//     },
+//     {
+//       deckId: 1,
+//       rackId: 4,
+//       rackType: "TUBE_RACK"
+//     },
+//     {
+//       deckId: 4,
+//       rackId: 3,
+//       rackType: "CHIP_CADDY"
+//     },
+//     {
+//       deckId: 3,
+//       rackId: 5,
+//       rackType: "TUBE_RACK"
+//     }
+//   ],
+//   pulseStations: [
+//     {
+//       Id: 1,
+//       LeftTubeAdapter: "50mL",
+//       NanoTubeAdapter: "1.5mL",
+//       RightTubeAdapter: "15mL",
+//       BufferSource: "Tube",
+//       BufferPosition: "Right",
+//       BufferType: "alcohol",
+//       TotalBufferVolume: 30
+//     },
+//     {
+//       Id: 2,
+//       LeftTubeAdapter: "50mL",
+//       NanoTubeAdapter: "None",
+//       RightTubeAdapter: "50mL",
+//       BufferSource: "Tube",
+//       BufferPosition: "Right",
+//       BufferType: "pbs",
+//       TotalBufferVolume: 30
+//     },
+//     {
+//       Id: 3,
+//       LeftTubeAdapter: "15mL",
+//       NanoTubeAdapter: "None",
+//       RightTubeAdapter: "50mL",
+//       BufferSource: "Reservoir",
+//       BufferPosition: "Right",
+//       BufferType: "alcohol",
+//       TotalBufferVolume: 30
+//     },
+//     {
+//       Id: 4,
+//       LeftTubeAdapter: "15mL",
+//       NanoTubeAdapter: "None",
+//       RightTubeAdapter: "50mL",
+//       BufferSource: "Reservoir",
+//       BufferPosition: "Right",
+//       BufferType: "alcohol",
+//       TotalBufferVolume: 30
+//     }
+//   ],
+//   cleaningStations: [
+//     {
+//       Id: 5,
+//       LeftTubeAdapter: "50mL",
+//       CleaningSolution: "AAA",
+//       TotalCleaningVolume: 1000,
+//       RightTubeAdapter: "50mL",
+//       RinseSolution: "BBB",
+//       TotalRinseVolume: 1000
+//     }
+//   ]
+// }
 
 
 
@@ -499,53 +510,53 @@ const data2 = {
 //   return hash.digest('hex');
 // };
 
-function deepEqual(a, b) {
-  // If both values are identical, they're equal
-  if (a === b) {
-    return true;
-  }
+// function deepEqual(a, b) {
+//   // If both values are identical, they're equal
+//   if (a === b) {
+//     return true;
+//   }
 
-  // Check if both values are objects and not null
-  if (typeof a === 'object' && a !== null && typeof b === 'object' && b !== null) {
-    // Check if both values are arrays
-    if (Array.isArray(a) && Array.isArray(b)) {
-      // Check if the length of the arrays is the same
-      if (a.length !== b.length) {
-        return false;
-      }
+//   // Check if both values are objects and not null
+//   if (typeof a === 'object' && a !== null && typeof b === 'object' && b !== null) {
+//     // Check if both values are arrays
+//     if (Array.isArray(a) && Array.isArray(b)) {
+//       // Check if the length of the arrays is the same
+//       if (a.length !== b.length) {
+//         return false;
+//       }
 
-      // Check if all elements in the arrays are deeply equal
-      for (let i = 0; i < a.length; i++) {
-        if (!deepEqual(a[i], b[i])) {
-          return false;
-        }
-      }
+//       // Check if all elements in the arrays are deeply equal
+//       for (let i = 0; i < a.length; i++) {
+//         if (!deepEqual(a[i], b[i])) {
+//           return false;
+//         }
+//       }
 
-      return true;
-    }
+//       return true;
+//     }
 
-    // Get the keys of the objects
-    const keysA = Object.keys(a);
-    const keysB = Object.keys(b);
+//     // Get the keys of the objects
+//     const keysA = Object.keys(a);
+//     const keysB = Object.keys(b);
 
-    // Check if the number of keys is the same
-    if (keysA.length !== keysB.length) {
-      return false;
-    }
+//     // Check if the number of keys is the same
+//     if (keysA.length !== keysB.length) {
+//       return false;
+//     }
 
-    // Check if all keys and values are deeply equal
-    for (let key of keysA) {
-      if (!deepEqual(a[key], b[key])) {
-        return false;
-      }
-    }
+//     // Check if all keys and values are deeply equal
+//     for (let key of keysA) {
+//       if (!deepEqual(a[key], b[key])) {
+//         return false;
+//       }
+//     }
 
-    return true;
-  }
+//     return true;
+//   }
 
-  // Values are of different types or not objects
-  return false;
-}
+//   // Values are of different types or not objects
+//   return false;
+// }
 
 // const startTime2 = performance.now();
 // for (let index = 0; index < 10000; index++) {
@@ -559,19 +570,19 @@ function deepEqual(a, b) {
 // }
 // const endTime1 = performance.now();
 
-const startTime3 = performance.now();
-for (let index = 0; index < 10000; index++) {
-  JSON.stringify(data1);
-}
-const endTime3 = performance.now();
+// const startTime3 = performance.now();
+// for (let index = 0; index < 10000; index++) {
+//   JSON.stringify(data1);
+// }
+// const endTime3 = performance.now();
 
 // const elapsedTime1 = endTime1 - startTime1;
 // const elapsedTime2 = endTime2 - startTime2;
-const elapsedTime3 = endTime3 - startTime3;
+// const elapsedTime3 = endTime3 - startTime3;
 
 // console.log('deepEqual: ', elapsedTime1);
 // console.log('checksum: ', elapsedTime2);
-console.log('stringify: ', elapsedTime3);
+// console.log('stringify: ', elapsedTime3);
 
 // console.time('deepEqual');
 // const equal = deepEqual(data1, data2);
